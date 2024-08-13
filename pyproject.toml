@@ -59,6 +59,7 @@ test = [
     "pytest-cov",
     "pytest-django",
     "pytest-rst",
+    "moto",
 ]
 docs = [
     "sphinx<6.0",
