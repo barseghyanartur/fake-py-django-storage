@@ -12,7 +12,7 @@ Subpackages
 Submodules
 ----------
 
-pathy\_storage.aws\_s3 module
+django\_storage.aws\_s3 module
 -----------------------------
 
 .. automodule:: django_storage.aws_s3
@@ -20,7 +20,7 @@ pathy\_storage.aws\_s3 module
    :undoc-members:
    :show-inheritance:
 
-pathy\_storage.azure\_cloud\_storage module
+django\_storage.azure\_cloud\_storage module
 -------------------------------------------
 
 .. automodule:: django_storage.azure_cloud_storage
@@ -28,7 +28,7 @@ pathy\_storage.azure\_cloud\_storage module
    :undoc-members:
    :show-inheritance:
 
-pathy\_storage.base module
+django\_storage.base module
 --------------------------
 
 .. automodule:: django_storage.base
@@ -36,7 +36,7 @@ pathy\_storage.base module
    :undoc-members:
    :show-inheritance:
 
-pathy\_storage.cloud module
+django\_storage.cloud module
 ---------------------------
 
 .. automodule:: django_storage.cloud
@@ -44,7 +44,7 @@ pathy\_storage.cloud module
    :undoc-members:
    :show-inheritance:
 
-pathy\_storage.filesystem module
+django\_storage.filesystem module
 --------------------------------
 
 .. automodule:: django_storage.filesystem
@@ -52,7 +52,7 @@ pathy\_storage.filesystem module
    :undoc-members:
    :show-inheritance:
 
-pathy\_storage.google\_cloud\_storage module
+django\_storage.google\_cloud\_storage module
 --------------------------------------------
 
 .. automodule:: django_storage.google_cloud_storage
