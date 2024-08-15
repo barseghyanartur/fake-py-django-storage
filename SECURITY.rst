@@ -9,7 +9,7 @@ Please report security issues by emailing Artur Barseghyan
 
 Supported Versions
 ------------------
-The two most recent ``fake-py-pathy-storage`` release series receive security
+The two most recent ``fake-py-django-storage`` release series receive security
 support.
 It's recommended to use the latest version.
 
@@ -28,8 +28,8 @@ It's recommended to use the latest version.
 .. note::
 
     For example, during the development cycle leading to the release
-    of ``fake-py-pathy-storage`` 0.17.x, support will be provided
-    for ``fake-py-pathy-storage`` 0.16.x.
+    of ``fake-py-django-storage`` 0.17.x, support will be provided
+    for ``fake-py-django-storage`` 0.16.x.
 
-    Upon the release of ``fake-py-pathy-storage`` 0.18.x, security support
-    for ``fake-py-pathy-storage`` 0.16.x will end.
+    Upon the release of ``fake-py-django-storage`` 0.18.x, security support
+    for ``fake-py-django-storage`` 0.16.x will end.
