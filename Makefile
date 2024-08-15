@@ -111,7 +111,7 @@ compile-requirements-upgrade:
 
 update-version:
 	sed -i 's/version = "[0-9.]\+"/version = "$(VERSION)"/' pyproject.toml
-	sed -i 's/__version__ = "[0-9.]\+"/__version__ = "$(VERSION)"/' fakepy/pathy_storage/__init__.py
+	sed -i 's/__version__ = "[0-9.]\+"/__version__ = "$(VERSION)"/' fakepy/django_storage/__init__.py
 
 build:
 	source $(VENV) && python -m build .
@@ -126,7 +126,7 @@ test-release:
 	source $(VENV) && twine upload --repository testpypi dist/*
 
 mypy:
-	source $(VENV) && mypy fakepy/pathy_storage/*.py
+	source $(VENV) && mypy fakepy/django_storage/*.py
 
 %:
 	@:
