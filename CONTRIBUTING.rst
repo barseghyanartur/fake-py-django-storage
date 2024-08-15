@@ -1,21 +1,21 @@
 Contributor guidelines
 ======================
 
-.. _documentation: https://fake-py-pathy-storage.readthedocs.io/#writing-documentation
-.. _testing: https://fake-py-pathy-storage.readthedocs.io/#testing
+.. _documentation: https://fake-py-django-storage.readthedocs.io/#writing-documentation
+.. _testing: https://fake-py-django-storage.readthedocs.io/#testing
 .. _pre-commit: https://pre-commit.com/#installation
 .. _black: https://black.readthedocs.io/
 .. _isort: https://pycqa.github.io/isort/
 .. _doc8: https://doc8.readthedocs.io/
 .. _ruff: https://beta.ruff.rs/docs/
 .. _pip-tools: https://pip-tools.readthedocs.io/
-.. _issues: https://github.com/barseghyanartur/fake-py-pathy-storage/issues
-.. _discussions: https://github.com/barseghyanartur/fake-py-pathy-storage/discussions
-.. _pull request: https://github.com/barseghyanartur/fake-py-pathy-storage/pulls
-.. _support: https://fake-py-pathy-storage.readthedocs.io/#support
-.. _installation: https://fake-py-pathy-storage.readthedocs.io/#installation
-.. _features: https://fake-py-pathy-storage.readthedocs.io/#features
-.. _prerequisites: https://fake-py-pathy-storage.readthedocs.io/#prerequisites
+.. _issues: https://github.com/barseghyanartur/fake-py-django-storage/issues
+.. _discussions: https://github.com/barseghyanartur/fake-py-django-storage/discussions
+.. _pull request: https://github.com/barseghyanartur/fake-py-django-storage/pulls
+.. _support: https://fake-py-django-storage.readthedocs.io/#support
+.. _installation: https://fake-py-django-storage.readthedocs.io/#installation
+.. _features: https://fake-py-django-storage.readthedocs.io/#features
+.. _prerequisites: https://fake-py-django-storage.readthedocs.io/#prerequisites
 
 Developer prerequisites
 -----------------------

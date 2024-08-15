@@ -12,7 +12,7 @@ fake-py-django-storage
 
 .. _fake-py-django-storage: https://github.com/barseghyanartur/fake-py-django-storage
 .. _Read the Docs: http://fake-py-django-storage.readthedocs.io
-.. _Contributor guidelines: https://fakepy.readthedocs.io/en/latest/contributor_guidelines.html
+.. _Contributor guidelines: https://fake-py-django-storage.readthedocs.io/en/latest/contributor_guidelines.html
 
 `Django`_ storage for `fake.py`_.
 
