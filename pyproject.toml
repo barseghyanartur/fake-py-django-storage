@@ -2,9 +2,9 @@
 name = "fake-py-django-storage"
 description = "Django storage for fake.py"
 readme = "README.rst"
-version = "0.1"
+version = "0.1.1"
 dependencies = [
-    "fake.py",
+    "fake.py>=0.9.5",
     "django",
 ]
 authors = [
