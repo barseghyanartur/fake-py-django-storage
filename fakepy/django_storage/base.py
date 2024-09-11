@@ -1,7 +1,6 @@
 import os
 from abc import abstractmethod
 from pathlib import Path
-from tempfile import NamedTemporaryFile
 from typing import Optional, Union
 
 from django.core.files.base import ContentFile
@@ -74,15 +73,11 @@ class DjangoBaseStorage(BaseStorage):
         if not extension:
             raise Exception("Extension shall be given!")
 
-        if basename:
-            filename = f"{basename}.{extension}"
-        else:
-            temp_file = NamedTemporaryFile(
-                prefix=prefix,
-                suffix=f".{extension}",
-                delete=False,
-            )
-            filename = Path(temp_file.name).name
+        if not basename:
+            basename = self.generate_basename(prefix)
+
+        filename = f"{basename}.{extension}"
+
         return os.path.join(dir_path, filename)
 
     def write_text(
