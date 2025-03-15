@@ -3,7 +3,7 @@ from storages.backends.azure_storage import AzureStorage
 from .cloud import DjangoCloudStorage
 
 __author__ = "Artur Barseghyan <artur.barseghyan@gmail.com>"
-__copyright__ = "2024 Artur Barseghyan"
+__copyright__ = "2024-2025 Artur Barseghyan"
 __license__ = "MIT"
 __all__ = ("DjangoAzureCloudStorage",)
 
