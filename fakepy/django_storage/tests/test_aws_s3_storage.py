@@ -10,7 +10,7 @@ from ..aws_s3 import DjangoAWSS3Storage
 from ..base import DjangoBaseStorage
 
 __author__ = "Artur Barseghyan <artur.barseghyan@gmail.com>"
-__copyright__ = "2024 Artur Barseghyan"
+__copyright__ = "2024-2025 Artur Barseghyan"
 __license__ = "MIT"
 __all__ = ("TestAWSS3StorageTestCase",)
 
@@ -21,7 +21,8 @@ __all__ = ("TestAWSS3StorageTestCase",)
             "BACKEND": ("storages.backends.s3boto3.S3Boto3Storage"),
             "OPTIONS": {"bucket_name": "test_bucket"},
         },
-    }
+    },
+    AWS_STORAGE_BUCKET_NAME="test_bucket",
 )
 @mock_aws
 class TestAWSS3StorageTestCase(TestCase):

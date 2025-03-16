@@ -28,7 +28,7 @@ from storages.backends.s3boto3 import S3Boto3Storage
 from article.models import Article
 
 __author__ = "Artur Barseghyan <artur.barseghyan@gmail.com>"
-__copyright__ = "2024 Artur Barseghyan"
+__copyright__ = "2024-2025 Artur Barseghyan"
 __license__ = "MIT"
 __all__ = (
     "ArticleFactory",
