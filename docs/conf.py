@@ -23,7 +23,7 @@ try:
 except ImportError:
     version = "0.1"
     project = "fake-py-django-storage"
-    copyright = "2024, Artur Barseghyan <artur.barseghyan@gmail.com>"
+    copyright = "2024-2025, Artur Barseghyan <artur.barseghyan@gmail.com>"
     author = "Artur Barseghyan <artur.barseghyan@gmail.com>"
 
 # -- General configuration ---------------------------------------------------
