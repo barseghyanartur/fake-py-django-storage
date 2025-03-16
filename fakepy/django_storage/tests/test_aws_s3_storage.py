@@ -21,7 +21,8 @@ __all__ = ("TestAWSS3StorageTestCase",)
             "BACKEND": ("storages.backends.s3boto3.S3Boto3Storage"),
             "OPTIONS": {"bucket_name": "test_bucket"},
         },
-    }
+    },
+    AWS_STORAGE_BUCKET_NAME="test_bucket",
 )
 @mock_aws
 class TestAWSS3StorageTestCase(TestCase):
@@ -43,7 +44,7 @@ class TestAWSS3StorageTestCase(TestCase):
             (
                 DjangoAWSS3Storage,
                 {
-                    "bucket_name": "test_bucket",
+                    # "bucket_name": "test_bucket",
                     "root_path": "testing",
                     "rel_path": "tmp",
                 },
@@ -54,7 +55,7 @@ class TestAWSS3StorageTestCase(TestCase):
             (
                 DjangoAWSS3Storage,
                 {
-                    "bucket_name": "test_bucket",
+                    # "bucket_name": "test_bucket",
                     "root_path": "testing",
                     "rel_path": "tmp",
                 },
@@ -108,7 +109,7 @@ class TestAWSS3StorageTestCase(TestCase):
             (
                 DjangoAWSS3Storage,
                 {
-                    "bucket_name": "test_bucket",
+                    # "bucket_name": "test_bucket",
                     "root_path": "testing",
                     "rel_path": "tmp",
                 },
@@ -142,7 +143,7 @@ class TestAWSS3StorageTestCase(TestCase):
             (
                 DjangoAWSS3Storage,
                 {
-                    "bucket_name": "test_bucket",
+                    # "bucket_name": "test_bucket",
                     "root_path": "root_tmp",
                     "rel_path": "rel_tmp",
                 },
@@ -173,7 +174,7 @@ class TestAWSS3StorageTestCase(TestCase):
             (
                 DjangoAWSS3Storage,
                 {
-                    "bucket_name": "test_bucket",
+                    # "bucket_name": "test_bucket",
                     "root_path": "root_tmp",
                     "rel_path": "rel_tmp",
                 },

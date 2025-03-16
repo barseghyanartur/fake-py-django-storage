@@ -75,7 +75,7 @@ jobs:
       # Set the base Django version from the matrix.
       # Dynamically calculate the upper bound by incrementing the minor version number.
       # Install Django with the version range: >= base_version and < upper_version.
-      - name: Install Dependencies
+      - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           base_version="${{ matrix.django-version }}"  # sss
@@ -85,6 +85,9 @@ jobs:
       - name: Install package
         run: |
           pip install -e .[all]
+      - name: List installed dependencies
+        run: |
+          pip freeze
       - name: Run test suite
         run: pytest -vrx
         env:
