@@ -43,6 +43,7 @@ class TestAWSS3StorageTestCase(TestCase):
             (
                 DjangoAWSS3Storage,
                 {
+                    "bucket_name": "test_bucket",
                     "root_path": "testing",
                     "rel_path": "tmp",
                 },
@@ -53,6 +54,7 @@ class TestAWSS3StorageTestCase(TestCase):
             (
                 DjangoAWSS3Storage,
                 {
+                    "bucket_name": "test_bucket",
                     "root_path": "testing",
                     "rel_path": "tmp",
                 },
@@ -106,6 +108,7 @@ class TestAWSS3StorageTestCase(TestCase):
             (
                 DjangoAWSS3Storage,
                 {
+                    "bucket_name": "test_bucket",
                     "root_path": "testing",
                     "rel_path": "tmp",
                 },
@@ -139,6 +142,7 @@ class TestAWSS3StorageTestCase(TestCase):
             (
                 DjangoAWSS3Storage,
                 {
+                    "bucket_name": "test_bucket",
                     "root_path": "root_tmp",
                     "rel_path": "rel_tmp",
                 },
@@ -169,6 +173,7 @@ class TestAWSS3StorageTestCase(TestCase):
             (
                 DjangoAWSS3Storage,
                 {
+                    "bucket_name": "test_bucket",
                     "root_path": "root_tmp",
                     "rel_path": "rel_tmp",
                 },
