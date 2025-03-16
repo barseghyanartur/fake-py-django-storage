@@ -78,7 +78,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          base_version="${{ matrix.django-version }}"  # sss
+          base_version="${{ matrix.django-version }}"
           upper_version=$(python -c "major, minor = map(int, '$base_version'.split('.')); print(f'{major}.{minor+1}')")
           pip install "django>=${base_version},<${upper_version}"
 #          pip install django==${{ matrix.django-version }}
