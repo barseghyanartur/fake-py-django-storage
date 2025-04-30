@@ -58,12 +58,12 @@ dev = [
 ]
 test = [
     "django",
+    "moto",
     "parametrize",
     "pytest",
+    "pytest-codeblock",
     "pytest-cov",
     "pytest-django",
-    "pytest-rst",
-    "moto",
 ]
 docs = [
     "sphinx<6.0",
