@@ -69,6 +69,7 @@ Usage
 `FileSystemStorage` of `Django`
 -------------------------------
 .. code-block:: python
+    :name: test_django_file_system_storage
 
     from fake import FAKER
     from fakepy.django_storage.filesystem import DjangoFileSystemStorage
