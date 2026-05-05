@@ -60,22 +60,29 @@ jobs:
 
       - name: Run test suite
         run: |
+          # 1. Calculate Django bounds
           base_version="${{ matrix.django-version }}"
           upper_version=$(python -c "v='$base_version'.split('.'); print(f'{v[0]}.{int(v[1])+1}')")
 
-          # 1. Sync the environment first
-          echo "--- Syncing Environment ---"
-          uv sync --group all --all-extras --with "django>=$base_version,<$upper_version"
+          # 2. Define arguments once to ensure identical environment resolution
+          # We use --with to inject the matrix Django version
+          UV_COMMON_ARGS="--group all --all-extras --with django>=$base_version,<$upper_version"
 
-          # 2. Freeze specifically from the local .venv
-          echo "--- Installed Dependencies (Project Environment) ---"
-          uv pip freeze --exclude-editable
+          echo "--- Environment: Python ${{ matrix.python-version }} | Django $base_version ---"
 
-          # 3. Run tests using the synced environment
-          echo "--- Running Tests ---"
-          uv run pytest -vrx
+          # 3. Use 'uv run' to execute 'uv pip freeze'
+          # This ensures we are looking at the ephemeral environment uv just built
+          echo "--- Installed Project Dependencies ---"
+          uv run $UV_COMMON_ARGS uv pip freeze
+
+          # 4. Run the actual tests
+          echo "--- Running pytest ---"
+          uv run $UV_COMMON_ARGS pytest -vrx
         env:
           PYTEST_ADDOPTS: "-vv --durations=10"
+          # This variable is key: it prevents UV from looking at system site-packages
+          # so your 'freeze' output will only show what you actually installed.
+          UV_SYSTEM_PYTHON: 0
 
       - name: Coveralls
         id: coveralls-setup
