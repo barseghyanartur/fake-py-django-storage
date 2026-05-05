@@ -210,7 +210,7 @@ clean:
 
 update-version:
 	$(PYTHON) -c "from pathlib import Path; import re; p=Path('pyproject.toml'); s=p.read_text(); s=re.sub(r'^version = \"[^\"]+\"', 'version = \"$(VERSION)\"', s, count=1, flags=re.M); p.write_text(s)"
-	$(PYTHON) -c "from pathlib import Path; import re; p=Path('$(PACKAGE_IMPORT_NAME)/__init__.py'); s=p.read_text(); s=re.sub(r'^__version__ = \"[^\"]+\"', '__version__ = \"$(VERSION)\"', s, count=1); p.write_text(s)"
+	$(PYTHON) -c "from pathlib import Path; import re; p=Path('$(PACKAGE_IMPORT_NAME)/__init__.py'); s=p.read_text(); s=re.sub(r'^__version__ = \"[^\"]+\"', '__version__ = \"$(VERSION)\"', s, count=1, flags=re.M); p.write_text(s)"
 
 package-build:
 	$(PYTHON) -m build .
