@@ -60,12 +60,18 @@ jobs:
 
       - name: Run test suite
         run: |
-          # Calculate version bounds for Django matrix
+          # Calculate version bounds
           base_version="${{ matrix.django-version }}"
           upper_version=$(python -c "v='$base_version'.split('.'); print(f'{v[0]}.{int(v[1])+1}')")
 
-          # uv run handles syncing the 'all' group and extras automatically
-          uv run --group all --all-extras --with "django>=$base_version,<$upper_version" pytest -vrx
+          # Define the shared command arguments to ensure the environment is identical
+          UV_ARGS="--group all --all-extras --with django>=$base_version,<$upper_version"
+
+          echo "--- Installed Dependencies ---"
+          uv run $UV_ARGS pip freeze
+
+          echo "--- Running Tests ---"
+          uv run $UV_ARGS pytest -vrx
         env:
           PYTEST_ADDOPTS: "-vv --durations=10"
 
