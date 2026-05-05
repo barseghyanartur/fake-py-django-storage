@@ -89,9 +89,9 @@ jobs:
           uv pip install --system -e .[all]
       - name: List installed dependencies
         run: |
-          pip freeze
+          uv pip freeze
       - name: Run test suite
-        run: pytest -vrx
+        run: uv run pytest -vrx
         env:
           PYTEST_ADDOPTS: "-vv --durations=10"
       - name: Coveralls
