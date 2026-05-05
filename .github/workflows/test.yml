@@ -14,27 +14,21 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: true
-      max-parallel: 5
       matrix:
-        os:
-          - ubuntu-22.04
-        python-version:
-          - "3.11"
-#          - "3.10"
-#          - "3.9"
-#          - "3.8"
+        os: [ubuntu-22.04]
+        python-version: ["3.11"]
     steps:
-      - uses: actions/checkout@v3
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4
-        with:
-          python-version: ${{ matrix.python-version }}
+      - uses: actions/checkout@v4
       - name: Install uv
         uses: astral-sh/setup-uv@v5
-      - name: Install detect-secrets
-        run: uv pip install --system detect-secrets doc8 isort
+        with:
+          enable-cache: true
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
       - name: Run pre-commit
-        uses: pre-commit/action@v3.0.0
+        uses: pre-commit/action@v3.0.1
 
   # *************************************
   # **************** Tests **************
@@ -47,53 +41,34 @@ jobs:
       fail-fast: false
       max-parallel: 5
       matrix:
-        os:
-          - ubuntu-22.04
-        #          - Windows
-        #          - MacOs
-        python-version:
-          - "3.13"
-          - "3.12"
-          - "3.11"
-          - "3.10"
-          - "3.9"
-        django-version:
-          - "4.2"
-          - "5.0"
-          - "5.1"
+        os: [ubuntu-22.04]
+        python-version: ["3.13", "3.12", "3.11", "3.10", "3.9"]
+        django-version: ["4.2", "5.0", "5.1"]
         exclude:
           - python-version: "3.9"
-            django-version: "5.0"  # Exclude Python 3.9 with Django 5.0
+            django-version: "5.0"
           - python-version: "3.9"
-            django-version: "5.1"  # Exclude Python 3.9 with Django 5.1
+            django-version: "5.1"
     steps:
-      - name: Clean-up
-        run: sudo apt clean && sudo apt autoclean && sudo rm -rf /tmp/* && sudo rm -rf /usr/share/dotnet && sudo rm -rf /opt/ghc && sudo rm -rf "/usr/local/share/boost" && sudo rm -rf "$AGENT_TOOLSDIRECTORY"
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+
       - name: Install uv
         uses: astral-sh/setup-uv@v5
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4
         with:
+          enable-cache: true
           python-version: ${{ matrix.python-version }}
-      # Set the base Django version from the matrix.
-      # Dynamically calculate the upper bound by incrementing the minor version number.
-      # Install Django with the version range: >= base_version and < upper_version.
-      - name: Install dependencies
-        run: |
-          base_version="${{ matrix.django-version }}"
-          upper_version=$(python -c "major, minor = map(int, '$base_version'.split('.')); print(f'{major}.{minor+1}')")
-          uv pip install --system "django>=${base_version},<${upper_version}"
-      - name: Install package with test dependencies
-        run: |
-          uv pip install --system -e . --group all --all-extras
-      - name: List installed dependencies
-        run: |
-          uv pip freeze
+
       - name: Run test suite
-        run: uv run pytest -vrx
+        run: |
+          # Calculate version bounds for Django matrix
+          base_version="${{ matrix.django-version }}"
+          upper_version=$(python -c "v='$base_version'.split('.'); print(f'{v[0]}.{int(v[1])+1}')")
+
+          # uv run handles syncing the 'all' group and extras automatically
+          uv run --group all --all-extras --with "django>=$base_version,<$upper_version" pytest -vrx
         env:
           PYTEST_ADDOPTS: "-vv --durations=10"
+
       - name: Coveralls
         id: coveralls-setup
         continue-on-error: true
@@ -110,19 +85,17 @@ jobs:
     needs: test
     runs-on: ubuntu-latest
     steps:
-    - name: Install uv
-      uses: astral-sh/setup-uv@v5
-    - name: Install dependencies
-      run: |
-        uv pip install --system pyyaml
-    - name: Coveralls Finished
-      id: coveralls-finish
-      continue-on-error: true
-#      if: steps.coveralls-setup.outcome == 'success'
-      env:
-        COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
-        GITHUB_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
-      uses: AndreMiras/coveralls-python-action@develop
-      with:
-        parallel-finished: true
-        debug: true
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+      - name: Install dependencies
+        run: uv pip install --system pyyaml
+      - name: Coveralls Finished
+        id: coveralls-finish
+        continue-on-error: true
+        env:
+          COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: AndreMiras/coveralls-python-action@develop
+        with:
+          parallel-finished: true
+          debug: true
