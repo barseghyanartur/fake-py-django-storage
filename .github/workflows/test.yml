@@ -109,7 +109,7 @@ jobs:
       - name: Install dependencies
         # The --break-system-packages flag allows uv to install into the
         # system Python despite the PEP 668 protection.
-        run: uv pip install --system --break-system-packages pyyaml
+        run: sudo uv pip install --system --break-system-packages pyyaml
 
       - name: Coveralls Finished
         id: coveralls-finish
