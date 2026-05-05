@@ -63,7 +63,7 @@ dev = [
 test = [
     "django",
     "moto",
-    "parametrize",
+    "parameterized",
     "pytest",
     "pytest-codeblock",
     "pytest-cov",
