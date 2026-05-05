@@ -86,7 +86,7 @@ jobs:
           uv pip install --system "django>=${base_version},<${upper_version}"
       - name: Install package with test dependencies
         run: |
-          uv pip install --system -e . --group test
+          uv pip install --system -e . --group all --all-extras
       - name: List installed dependencies
         run: |
           uv pip freeze
