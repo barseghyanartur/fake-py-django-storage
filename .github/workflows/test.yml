@@ -32,7 +32,7 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@v5
       - name: Install detect-secrets
-        run: uv pip install --system detect-secrets doc8 isort==5.11.5
+        run: uv pip install --system detect-secrets doc8 isort
       - name: Run pre-commit
         uses: pre-commit/action@v3.0.0
 
@@ -84,9 +84,9 @@ jobs:
           base_version="${{ matrix.django-version }}"
           upper_version=$(python -c "major, minor = map(int, '$base_version'.split('.')); print(f'{major}.{minor+1}')")
           uv pip install --system "django>=${base_version},<${upper_version}"
-      - name: Install package
+      - name: Install package with test dependencies
         run: |
-          uv pip install --system -e .[all]
+          uv pip install --system -e . --group test
       - name: List installed dependencies
         run: |
           uv pip freeze
