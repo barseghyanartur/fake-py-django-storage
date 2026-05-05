@@ -7,7 +7,6 @@ __all__ = ("DjangoCloudStorage",)
 
 
 class DjangoCloudStorage(DjangoBaseStorage):
-
     def relpath(self: "DjangoCloudStorage", filename: str) -> str:
         """Return relative path."""
         return filename

@@ -1,132 +1,159 @@
-# Update version ONLY here
-VERSION := 0.1.2
+.PHONY: help install sync update-lock \
+        test quick-test django-test \
+        doc8 ruff ruff-fix format mypy pre-commit \
+        build-docs rebuild-docs serve-docs \
+        compile-requirements compile-requirements-upgrade \
+        create-secrets detect-secrets \
+        clean-dev clean-test clean \
+        update-version package-build check-package-build release test-release \
+        django-shell django-runserver django-makemigrations django-apply-migrations \
+        shell ipython
+
 SHELL := /bin/bash
-# Makefile for project
-VENV := ~/.virtualenvs/fake-py-django-storage/bin/activate
 
-# Build documentation using Sphinx and zip it
-build_docs:
-	source $(VENV) && sphinx-build -n -a -b html docs builddocs
-	cd builddocs && zip -r ../builddocs.zip . -x ".*" && cd ..
+PROJECT_NAME ?= fake-py-django-storage
+PACKAGE_IMPORT_NAME ?= fakepy/django_storage
+PACKAGE_EGG_INFO ?= fake-py-django-storage.egg-info
+VERSION ?= 0.1.2
 
-rebuild_docs:
-	source $(VENV) && sphinx-apidoc fakepy/django_storage --full -o docs -H 'fake-py-django-storage' -A 'Artur Barseghyan <artur.barseghyan@gmail.com>' -f -d 20
-	cp docs/conf.py.distrib docs/conf.py
-	cp docs/index.rst.distrib docs/index.rst
+UV ?= uv
+PYTHON ?= $(UV) run python
+PYTEST ?= $(UV) run pytest
+RUFF ?= $(UV) run ruff
+MYPY ?= $(UV) run mypy
+DOC8 ?= $(UV) run doc8
+PRE_COMMIT ?= $(UV) run pre-commit
+DETECT_SECRETS ?= $(UV) run detect-secrets
+TWINE ?= $(UV) run twine
+SPHINX_BUILD ?= $(UV) run sphinx-build
+SPHINX_APIDOC ?= $(UV) run sphinx-apidoc
 
-build_docs_epub:
-	$(MAKE) -C docs/ epub
+TEST_TARGET ?= quick-test
+RUFF_PATHS ?= .
+MYPY_PATHS ?= fakepy/django_storage/*.py
 
-build_docs_pdf:
-	$(MAKE) -C docs/ latexpdf
+DOCS_DIR ?= docs
+BUILD_DOCS_DIR ?= builddocs
+DOCS_REQUIREMENTS ?= $(DOCS_DIR)/requirements.txt
+DOCS_PORT ?= 5001
 
-pre-commit:
-	pre-commit run --all-files
+help:
+	@echo "Common targets:"
+	@echo "  make install          Sync uv environment with all groups and extras"
+	@echo "  make test             Run tests (pytest)"
+	@echo "  make quick-test      Run pytest through uv"
+	@echo "  make ruff           Run ruff check"
+	@echo "  make mypy          Run mypy"
+	@echo "  make build-docs    Build documentation with Sphinx"
 
-# Format code using Black
-black:
-	source $(VENV) && black .
+sync install:
+	$(UV) sync --all-groups --all-extras
 
-# Sort imports using isort
-isort:
-	source $(VENV) && isort . --overwrite-in-place
+update-lock:
+	$(UV) lock --upgrade
 
-doc8:
-	source $(VENV) && doc8
+test: $(TEST_TARGET)
 
-# Run ruff on the codebase
-ruff:
-	source $(VENV) && ruff .
-
-# Serve the built docs on port 5001
-serve_docs:
-	source $(VENV) && cd builddocs && python -m http.server 5001
-
-# Install the project
-install:
-	source $(VENV) && pip install -e .[all]
-
-test: clean
-	source $(VENV) && pytest -vrx -s
-
-test-all: test \
-	django-test
+quick-test:
+	$(PYTEST)
 
 django-test:
-	source $(VENV) && cd examples/django/ && ./manage.py test
+	cd examples/django/ && $(PYTEST) -vrx -s
+
+ipython:
+	$(UV) run ipython
 
 shell:
-	source $(VENV) && ipython
+	$(UV) run ipython
 
-django-shell:
-	source $(VENV) && python examples/django/manage.py shell
+doc8:
+	$(DOC8)
 
-django-runserver:
-	source $(VENV) && python examples/django/manage.py runserver 0.0.0.0:8000 --traceback -v 3
+ruff:
+	$(RUFF) check $(RUFF_PATHS)
 
-django-makemigrations:
-	source $(VENV) && python examples/django/manage.py makemigrations
+ruff-fix:
+	$(RUFF) check $(RUFF_PATHS) --fix
 
-django-apply-migrations:
-	source $(VENV) && python examples/django/manage.py migrate
-
-create-secrets:
-	source $(VENV) && detect-secrets scan > .secrets.baseline
-
-detect-secrets:
-	source $(VENV) && detect-secrets scan --baseline .secrets.baseline
-
-# Clean up generated files
-clean:
-	find . -type f -name "*.pyc" -exec rm -f {} \;
-	find . -type f -name "builddocs.zip" -exec rm -f {} \;
-	find . -type f -name "*.py,cover" -exec rm -f {} \;
-	find . -type f -name "*.orig" -exec rm -f {} \;
-	find . -type f -name "*.db" -exec rm -f {} \;
-	find . -type d -name "__pycache__" -exec rm -rf {} \; -prune
-	rm -rf build/
-	rm -rf dist/
-	rm -rf .cache/
-	rm -rf htmlcov/
-	rm -rf builddocs/
-	rm -rf testdocs/
-	rm -rf .coverage
-	rm -rf .pytest_cache/
-	rm -rf .mypy_cache/
-	rm -rf .ruff_cache/
-	rm -rf dist/
-	rm -rf fake-py-django-storage.egg-info/
-
-compile-requirements-pip-tools:
-	source $(VENV) && python -m piptools compile --all-extras -o docs/requirements.txt pyproject.toml
-
-compile-requirements-upgrade-pip-tools:
-	source $(VENV) && python -m piptools compile --all-extras -o docs/requirements.txt pyproject.toml --upgrade
-
-compile-requirements:
-	source $(VENV) && uv pip compile --all-extras -o docs/requirements.txt pyproject.toml
-
-compile-requirements-upgrade:
-	source $(VENV) && uv pip compile --all-extras -o docs/requirements.txt pyproject.toml --upgrade
-
-update-version:
-	sed -i 's/version = "[0-9.]\+"/version = "$(VERSION)"/' pyproject.toml
-	sed -i 's/__version__ = "[0-9.]\+"/__version__ = "$(VERSION)"/' fakepy/django_storage/__init__.py
-
-build:
-	source $(VENV) && python -m build .
-
-check-build:
-	source $(VENV) && twine check dist/*
-
-release:
-	source $(VENV) && twine upload dist/* --verbose
-
-test-release:
-	source $(VENV) && twine upload --repository testpypi dist/*
+format:
+	$(UV) run black .
+	$(UV) run isort .
 
 mypy:
-	source $(VENV) && mypy fakepy/django_storage/*.py
+	$(MYPY) $(MYPY_PATHS)
 
-%:
-	@:
+pre-commit-install:
+	$(PRE_COMMIT) install
+
+pre-commit: pre-commit-install
+	$(PRE_COMMIT) run --all-files
+
+build-docs:
+	$(SPHINX_APIDOC) fakepy/django_storage --full -o $(DOCS_DIR) -H 'fake-py-django-storage' -A 'Artur Barseghyan <artur.barseghyan@gmail.com>' -f -d 20
+	$(SPHINX_BUILD) -n -a -b html $(DOCS_DIR) $(BUILD_DOCS_DIR)
+	cd $(BUILD_DOCS_DIR) && zip -r ../$(BUILD_DOCS_DIR).zip . -x ".*"
+
+rebuild-docs:
+	$(SPHINX_APIDOC) fakepy/django_storage --full -o $(DOCS_DIR) -H 'fake-py-django-storage' -A 'Artur Barseghyan <artur.barseghyan@gmail.com>' -f -d 20
+	@if [ -f "$(DOCS_DIR)/conf.py.distrib" ]; then cp "$(DOCS_DIR)/conf.py.distrib" "$(DOCS_DIR)/conf.py"; fi
+	@if [ -f "$(DOCS_DIR)/index.rst.distrib" ]; then cp "$(DOCS_DIR)/index.rst.distrib" "$(DOCS_DIR)/index.rst"; fi
+
+serve-docs:
+	cd $(BUILD_DOCS_DIR) && $(PYTHON) -m http.server $(DOCS_PORT)
+
+compile-requirements:
+	$(UV) pip compile pyproject.toml --all-extras --group docs -o $(DOCS_REQUIREMENTS)
+
+compile-requirements-upgrade:
+	$(UV) pip compile pyproject.toml --all-extras --group docs -o $(DOCS_REQUIREMENTS) --upgrade
+
+create-secrets:
+	$(DETECT_SECRETS) scan > .secrets.baseline
+
+detect-secrets:
+	$(DETECT_SECRETS) scan --baseline .secrets.baseline
+
+django-shell:
+	$(PYTHON) examples/django/manage.py shell
+
+django-runserver:
+	$(PYTHON) examples/django/manage.py runserver 0.0.0.0:8000 --traceback -v 3
+
+django-makemigrations:
+	$(PYTHON) examples/django/manage.py makemigrations
+
+django-apply-migrations:
+	$(PYTHON) examples/django/manage.py migrate
+
+clean-dev:
+	find . -name "*.orig" -exec rm -rf {} +
+	find . -type d -name "__pycache__" -prune -exec rm -rf {} +
+	rm -rf dist/ build/ $(PACKAGE_EGG_INFO) src/*.egg-info *.egg-info
+	rm -rf .cache/ .mypy_cache/ .ruff_cache/
+
+clean-test:
+	find . -name "*.pyc" -exec rm -rf {} +
+	find . -name "*.py,cover" -exec rm -rf {} +
+	rm -rf .coverage .coverage.* .pytest_cache/ htmlcov/
+	rm -rf builddocs/ testdocs/ .coverage
+
+clean:
+	rm -rf build/ dist/ .cache/ htmlcov/
+	rm -rf .pytest_cache/ .mypy_cache/ .ruff_cache/
+	rm -rf $(BUILD_DOCS_DIR)/
+
+update-version:
+	$(PYTHON) -c "from pathlib import Path; import re; p=Path('pyproject.toml'); s=p.read_text(); s=re.sub(r'^version = \"[^\"]+\"', 'version = \"$(VERSION)\"', s, count=1, flags=re.M); p.write_text(s)"
+	$(PYTHON) -c "from pathlib import Path; import re; p=Path('$(PACKAGE_IMPORT_NAME)/__init__.py'); s=p.read_text(); s=re.sub(r'^__version__ = \"[^\"]+\"', '__version__ = \"$(VERSION)\"', s, count=1); p.write_text(s)"
+
+package-build:
+	$(PYTHON) -m build .
+
+check-package-build:
+	$(TWINE) check dist/*
+
+release:
+	$(TWINE) upload dist/* --verbose
+
+test-release:
+	$(TWINE) upload --repository testpypi dist/* --verbose
