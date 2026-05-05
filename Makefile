@@ -46,11 +46,53 @@ help:
 	@echo "  make mypy          Run mypy"
 	@echo "  make build-docs    Build documentation with Sphinx"
 
+
+# -----------------------------------------------------------------------
+# Docker-based testing
+# -----------------------------------------------------------------------
+
+docker-build:
+	docker compose build
+
+# List all available environments in the Docker container
+docker-list-envs: docker-build
+	docker compose run --rm tox -l
+
+docker-test: docker-build
+	docker compose run --rm tox
+
+# Usage: make docker-test-env ENV=py312
+docker-test-env: docker-build
+	@if [ -z "$(ENV)" ]; then \
+		echo "Usage: make test-env ENV=py312"; \
+		exit 1; \
+	fi
+	docker compose run --rm tox -e $(ENV)
+
+docker-shell: docker-build
+	docker compose run --rm --entrypoint bash tox
+
+# Usage: make docker-shell-env ENV=py312
+docker-shell-env: docker-build
+	@if [ -z "$(ENV)" ]; then \
+		echo "Usage: make shell-env ENV=py312"; \
+		exit 1; \
+	fi
+	docker compose run --rm --entrypoint bash tox -e $(ENV)
+
+# ----------------------------------------------------------------------------
+# Installation
+# ----------------------------------------------------------------------------
+
 sync install:
 	$(UV) sync --all-groups --all-extras
 
 update-lock:
 	$(UV) lock --upgrade
+
+# -----------------------------------------------------------------------
+# uv-based testing
+# -----------------------------------------------------------------------
 
 test: $(TEST_TARGET)
 
@@ -60,11 +102,9 @@ quick-test:
 django-test:
 	cd examples/django/ && $(PYTEST) -vrx -s
 
-ipython:
-	$(UV) run ipython
-
-shell:
-	$(UV) run ipython
+# -----------------------------------------------------------------------
+# Code quality (run locally)
+# -----------------------------------------------------------------------
 
 doc8:
 	$(DOC8)
@@ -88,6 +128,20 @@ pre-commit-install:
 pre-commit: pre-commit-install
 	$(PRE_COMMIT) run --all-files
 
+# ----------------------------------------------------------------------------
+# Security
+# ----------------------------------------------------------------------------
+
+create-secrets:
+	$(DETECT_SECRETS) scan > .secrets.baseline
+
+detect-secrets:
+	$(DETECT_SECRETS) scan --baseline .secrets.baseline
+
+# ----------------------------------------------------------------------------
+# Documentation
+# ----------------------------------------------------------------------------
+
 build-docs:
 	$(SPHINX_APIDOC) fakepy/django_storage --full -o $(DOCS_DIR) -H 'fake-py-django-storage' -A 'Artur Barseghyan <artur.barseghyan@gmail.com>' -f -d 20
 	$(SPHINX_BUILD) -n -a -b html $(DOCS_DIR) $(BUILD_DOCS_DIR)
@@ -107,11 +161,15 @@ compile-requirements:
 compile-requirements-upgrade:
 	$(UV) pip compile pyproject.toml --all-extras --group docs -o $(DOCS_REQUIREMENTS) --upgrade
 
-create-secrets:
-	$(DETECT_SECRETS) scan > .secrets.baseline
+# -----------------------------------------------------------------------
+# Dev-handy
+# -----------------------------------------------------------------------
 
-detect-secrets:
-	$(DETECT_SECRETS) scan --baseline .secrets.baseline
+ipython:
+	$(UV) run ipython
+
+shell:
+	$(UV) run ipython
 
 django-shell:
 	$(PYTHON) examples/django/manage.py shell
@@ -124,6 +182,10 @@ django-makemigrations:
 
 django-apply-migrations:
 	$(PYTHON) examples/django/manage.py migrate
+
+# -----------------------------------------------------------------------
+# Housekeeping
+# -----------------------------------------------------------------------
 
 clean-dev:
 	find . -name "*.orig" -exec rm -rf {} +
@@ -141,6 +203,10 @@ clean:
 	rm -rf build/ dist/ .cache/ htmlcov/
 	rm -rf .pytest_cache/ .mypy_cache/ .ruff_cache/
 	rm -rf $(BUILD_DOCS_DIR)/
+
+# ----------------------------------------------------------------------------
+# Release
+# ----------------------------------------------------------------------------
 
 update-version:
 	$(PYTHON) -c "from pathlib import Path; import re; p=Path('pyproject.toml'); s=p.read_text(); s=re.sub(r'^version = \"[^\"]+\"', 'version = \"$(VERSION)\"', s, count=1, flags=re.M); p.write_text(s)"
