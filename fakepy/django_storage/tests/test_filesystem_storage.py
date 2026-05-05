@@ -2,7 +2,7 @@ from typing import Any, Dict, Type, Union
 
 from django.test import TestCase, override_settings
 from fake import FAKER, FILE_REGISTRY
-from parametrize import parametrize
+from parameterized import parameterized
 
 from ..base import DjangoBaseStorage
 from ..filesystem import DjangoFileSystemStorage
@@ -33,8 +33,8 @@ class TestStoragesTestCase(TestCase):
         super().tearDown()
         FILE_REGISTRY.clean_up()  # Clean up files
 
-    @parametrize(
-        "storage_cls, kwargs, prefix, basename, extension",
+    @parameterized.expand(
+        # "storage_cls, kwargs, prefix, basename, extension",
         [
             # DjangoFileSystemStorage
             (
@@ -96,8 +96,8 @@ class TestStoragesTestCase(TestCase):
         # Clean up
         storage.unlink(filename_bytes)
 
-    @parametrize(
-        "storage_cls, kwargs, prefix, extension",
+    @parameterized.expand(
+        # "storage_cls, kwargs, prefix, extension",
         [
             # DjangoFileSystemStorage
             (
@@ -129,8 +129,8 @@ class TestStoragesTestCase(TestCase):
             # Generate filename
             storage.generate_filename(basename=prefix, extension=extension)
 
-    @parametrize(
-        "storage_cls, kwargs, prefix, extension",
+    @parameterized.expand(
+        # "storage_cls, kwargs, prefix, extension",
         [
             # DjangoFileSystemStorage
             (
@@ -159,8 +159,8 @@ class TestStoragesTestCase(TestCase):
         )
         self.assertTrue(filename.startswith("root_tmp/rel_tmp/"))
 
-    @parametrize(
-        "storage_cls, kwargs, prefix, extension",
+    @parameterized.expand(
+        # "storage_cls, kwargs, prefix, extension",
         [
             # DjangoFileSystemStorage
             (

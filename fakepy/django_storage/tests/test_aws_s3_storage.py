@@ -4,7 +4,7 @@ import boto3
 from django.test import TestCase, override_settings
 from fake import FAKER, FILE_REGISTRY
 from moto import mock_aws
-from parametrize import parametrize
+from parameterized import parameterized
 
 from ..aws_s3 import DjangoAWSS3Storage
 from ..base import DjangoBaseStorage
@@ -37,8 +37,8 @@ class TestAWSS3StorageTestCase(TestCase):
         super().tearDown()
         FILE_REGISTRY.clean_up()  # Clean up files
 
-    @parametrize(
-        "storage_cls, kwargs, prefix, basename, extension",
+    @parameterized.expand(
+        # "storage_cls, kwargs, prefix, basename, extension",
         [
             # DjangoAWSS3Storage
             (
@@ -100,8 +100,8 @@ class TestAWSS3StorageTestCase(TestCase):
         # Clean up
         storage.unlink(filename_bytes)
 
-    @parametrize(
-        "storage_cls, kwargs, prefix, extension",
+    @parameterized.expand(
+        # "storage_cls, kwargs, prefix, extension",
         [
             # DjangoAWSS3Storage
             (
@@ -133,8 +133,8 @@ class TestAWSS3StorageTestCase(TestCase):
             # Generate filename
             storage.generate_filename(basename=prefix, extension=extension)
 
-    @parametrize(
-        "storage_cls, kwargs, prefix, extension",
+    @parameterized.expand(
+        # "storage_cls, kwargs, prefix, extension",
         [
             # DjangoAWSS3Storage
             (
@@ -163,8 +163,8 @@ class TestAWSS3StorageTestCase(TestCase):
         )
         self.assertTrue(filename.startswith("root_tmp/rel_tmp/"))
 
-    @parametrize(
-        "storage_cls, kwargs, prefix, extension",
+    @parameterized.expand(
+        # "storage_cls, kwargs, prefix, extension",
         [
             # DjangoAWSS3Storage
             (
